@@ -52,7 +52,7 @@ def brackets(page, market, marketName):
         count = count + 1
         name = item['name']
         buyno = item['bestBuyNoCost']
-        buyyes = item['bestBuyNoCost']
+        buyyes = item['bestBuyYesCost']
         if buyno == None:
             buyno = "N/A"
         if buyyes == None:
