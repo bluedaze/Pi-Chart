@@ -90,12 +90,12 @@ while (keep_going=="y"):
     elif choice == "6":
         brackets(m6, rdt, m6name)
     elif choice == "7":
-        brackets(m1, market, m1name)
-        brackets(m2, market, m2name)
-        brackets(m3, market, m3name)
-        brackets(m4, market, m4name)
-        brackets(m5, market, m5name)
-        brackets(m6, market, m6name)        
+        brackets(m1, whitehouse, m1name)
+        brackets(m2, vp, m2name)
+        brackets(m3, potus, m3name)
+        brackets(m4, aoc, m4name)
+        brackets(m5, yang, m5name)
+        brackets(m6, rdt, m6name)       
     elif choice == "Q":
         print("Choice was 2.  Exiting program")
         keep_going = "n"
