@@ -48,8 +48,8 @@ def brackets(page, market, marketName):
     print(marketName.center(80))
     print()
     count = 0
-    for item in whitehouse:
-        count = count + 1
+    market_list = []
+    for item in market:
         name = item['name']
         buyno = item['bestBuyNoCost']
         buyyes = item['bestBuyYesCost']
@@ -57,12 +57,14 @@ def brackets(page, market, marketName):
             buyno = "N/A"
         if buyyes == None:
             buyyes = "N/A"
-        print()
-        market = "B" + str(count) + ": " + str(name)
-        prices = "No: " + str(buyno) + " Yes: " + str(buyyes)
-        print(market)
-        print(prices)
-        print()
+        market = str(name) + "\nNo: " + str(buyno) + " Yes: " + str(buyyes)
+        market_list.append(market)
+        market_list.sort()
+    print()
+    for i in market_list:
+        count = count + 1
+        print("B" + str(count) + ":" + i)
+    print()
 
 keep_going="y"
 while (keep_going=="y"):
@@ -76,17 +78,17 @@ while (keep_going=="y"):
     print("  Q. QUIT")
     choice = input("\nPlease enter your choice: ")
     if choice == "1":
-        brackets(m1, market, m1name)
+        brackets(m1, whitehouse, m1name)
     elif choice == "2":
-        brackets(m2, market, m2name)
+        brackets(m2, vp, m2name)
     elif choice == "3":
-        brackets(m3, market, m3name)
+        brackets(m3, potus, m3name)
     elif choice == "4":
-        brackets(m4, market, m4name)
+        brackets(m4, aoc, m4name)
     elif choice == "5":
-        brackets(m5, market, m5name)
+        brackets(m5, yang, m5name)
     elif choice == "6":
-        brackets(m6, market, m6name)
+        brackets(m6, rdt, m6name)
     elif choice == "7":
         brackets(m1, market, m1name)
         brackets(m2, market, m2name)
