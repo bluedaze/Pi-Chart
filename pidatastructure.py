@@ -14,8 +14,6 @@ class predictitCall():
         marketURL = i['url']
         contracts = i['contracts']
         if (marketName.find('tweets') != -1):
-            marketHeader = {}
-            marketHeader[str(marketID)] = [str(marketName), str(marketURL)]
             brackets = {}
             for i in contracts:
                 betName = i['name']
