@@ -14,7 +14,6 @@ def CreateDataFrame(markets):
     '''Generator to create a data structure for PredictIt.com twitter markets.
     This Data can be more easily parsed for data analysis.'''
     # The following will make it easier to find the values related to the json object which is retrieved.
-    #pprint(markets)
     for i in markets:
         marketName = i['name']
         marketID = i['id']
