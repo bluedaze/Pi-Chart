@@ -4,16 +4,17 @@ import json
 from pprint import pprint
 
 def get_json():
+    '''Calls json object from PredictIt to be parsed'''
     page = requests.get('https://www.predictit.org/api/marketdata/all/')
     all_markets = json.loads(page.text)
     markets = all_markets['markets']
     #pprint(markets)
     return markets
 
-def CreateDataFrame(markets):
+def CreateDataFrame():
     '''Generator to create a data structure for PredictIt.com twitter markets.
     This Data can be more easily parsed for data analysis.'''
-    # The following will make it easier to find the values related to the json object which is retrieved.
+    markets = get_json()
     for i in markets:
         marketName = i['name']
         marketID = i['id']
@@ -47,8 +48,7 @@ def CreateDataFrame(markets):
 
 
 if __name__ == "__main__":
-    markets = get_json()
-    data = CreateDataFrame(markets)
+    data = CreateDataFrame()
     for i in data:
         print(i)
         print()
