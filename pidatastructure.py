@@ -22,17 +22,18 @@ def CreateDataFrame():
         contracts = i['contracts']
         timeStamp = i['timeStamp']
         if (marketName.find('tweets') != -1):
-            #pprint(i)
             brackets = {}
             count = 0
             for i in contracts:
                 count = count + 1
+                
                 betName = i['name']
                 betName = "B" + str(count) + ": " + betName
                 bestBuyNo = i['bestBuyNoCost']
                 bestBuyYes = i['bestBuyYesCost']
                 bestSellNo = i['bestSellNoCost']
                 bestSellYes = i['bestSellYesCost']
+                
                 bets = {"MarketHeader": [
                 "Market Name: " + str(marketName),
                 "Market ID: " + str(marketID),
@@ -43,6 +44,7 @@ def CreateDataFrame():
                 "Buy-yes: "  + str(bestBuyYes),
                 "Sell-no: "  + str(bestSellNo),
                 "Sell-yes: " + str(bestSellYes)]}
+                
                 brackets.update(bets)
             yield brackets
 
