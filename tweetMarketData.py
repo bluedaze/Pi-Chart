@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import requests
 import json
 from pprint import pprint
@@ -8,14 +9,21 @@ markets = all_markets['markets']
 #pprint(markets)
 for i in markets:
     marketName = i['name']
+    timeStamp = i['timeStamp']
     marketID = i['id']
     marketURL = i['url']
+    marketURL = "See further details here: " + marketURL
     contracts = i['contracts']
     if (marketName.find('tweets') != -1):
         #pprint(contracts)
-        print("Market ID:", marketID)
-        print(marketName)
-        print(marketURL)
+        print("\n\n")
+        divider = "[~~~~~~~~~~~~~~~~~~~~~~~~~~~]"
+        print(divider.center(120))
+        header = "Market ID: " + str(marketID)
+        print(header.center(120))
+        print(timeStamp.center(120))
+        print()
+        print(marketName.center(120))
         for i in contracts:
             betName = i['name']
             bestBuyNo = i['bestBuyNoCost']
@@ -26,8 +34,26 @@ for i in markets:
             print("-------")
             print(betName)
             print("-------")
-            print("Buy no:", bestBuyNo)
-            print("Buy yes:", bestBuyYes)
-            print("Sell no:", bestSellNo)
-            print("Sell yes:", bestSellYes)
+
+            if bestBuyNo == None:
+                print("Buy no: N/A")
+            else:
+                print("Buy no:", bestBuyNo)
+
+            if bestBuyYes == None:
+                print("Buy yes: N/A")
+            else:
+                print("Buy yes:", bestBuyYes)
+
+            if bestSellNo == None:
+                print("Sell no: N/A")
+            else:
+                print("Sell no:", bestSellNo)
+
+            if bestSellYes == None:
+                print("Sell yes: N/A")
+            else:
+                print("Sell yes:", bestSellYes)
+        print("\n")
+        print(marketURL.center(100))
         print()
