@@ -25,7 +25,6 @@ while True:
             print(divider.center(120))
             header = "Market ID: " + str(marketID)
             print(header.center(120))
-            print(timeStamp.center(120))
             print()
             print(marketName.center(120))
             for i in contracts:
@@ -61,5 +60,6 @@ while True:
             print("\n")
             print(marketURL.center(100))
             print()
-    print(count)
+    print("Iteration:", count, "\n")
+    print(timeStamp)
     time.sleep(60)
