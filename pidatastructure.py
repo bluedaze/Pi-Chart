@@ -62,13 +62,13 @@ def buildCSV():
     ''' Build a CSV which can be easily parsed to iterated upon for further analysis.'''
 
     # Much of this work may look duplicated, but creating a new function for the CSV
-    # Allows the above data structure to be reused in the future, if needed.
+    # allows the above data structure to be reused in the future, if needed.
     data = createDataFrame()
     bets = []
     for i in data:
         # Create a name based upon the market header object by string splitting, and then stripping white space.
         name = i["MarketHeader"][0][35::].rsplit("post")[0].strip()
-        # Create tuple objects which can then be iterated over to write a csv.
+        # Create tuple objects, then add to list, which can then be iterated over to write a csv.
         b1 = (name, "b1", i["B1"][1:5])
         b2 = (name, "b2", i["B2"][1:5])
         b3 = (name, "b3", i["B3"][1:5])
