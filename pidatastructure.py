@@ -22,7 +22,6 @@ def createDataFrame():
         count = 0
         marketName = i['name']
         marketID = i['id']
-        marketURL = i['url']
         contracts = i['contracts']
         timeStamp = i['timeStamp']
 
@@ -61,60 +60,36 @@ def createDataFrame():
             # Much faster than returning a list object, which was what I was doing before.
             yield brackets
 
-def buildCSV(data):
+def buildCSV():
+    # Much of this work may look duplicated, but creating a new function for the CSV
+    # Allows the above data structure to be reused in the future, if needed.
+    data = createDataFrame()
     bets = []
     for i in data:
-        header = i["MarketHeader"]
-        name = header[0]
-        name = name[35::]
-        name = name.rsplit("post")[0]
-        name = name.strip()
-        b1 = i["B1"][1:5]
-        b2 = i["B2"][1:5]
-        b3 = i["B3"][1:5]
-        b4 = i["B4"][1:5]
-        b5 = i["B5"][1:5]
-        b6 = i["B6"][1:5]
-        for item in b1:
-                row = name+","+"b1,"+item+"\n"
-                with open('bracketinfo.txt', "a") as pilog:
-                    pilog.write(row)
-                print(row)
-        for item in b2:
-                row = name+","+"b2,"+item+"\n"
-                with open('bracketinfo.txt', "a") as pilog:
-                    pilog.write(row)
-                print(row)
-        for item in b3:
-                row = name+","+"b3,"+item+"\n"
-                with open('bracketinfo.txt', "a") as pilog:
-                    pilog.write(row)
-                print(row)
-        for item in b4:
-                row = name+","+"b4,"+item+"\n"
-                with open('bracketinfo.txt', "a") as pilog:
-                    pilog.write(row)
-                print(row)
-        for item in b5:
-                row = name+","+"b5,"+item+"\n"
-                with open('bracketinfo.txt', "a") as pilog:
-                    pilog.write(row)
-                print(row)
-        for item in b6:
-                row = name+","+"b6,"+item+"\n"
-                with open('bracketinfo.txt', "a") as pilog:
-                    pilog.write(row)
-                print(row)
+        # Create a name based upon the market header object by string splitting, and then stripping white space.
+        name = i["MarketHeader"][0][35::].rsplit("post")[0].strip()
+        # Create tuple objects which can then be iterated over to write a csv.
+        b1 = (name, "b1", i["B1"][1:5])
+        b2 = (name, "b2", i["B2"][1:5])
+        b3 = (name, "b3", i["B3"][1:5])
+        b4 = (name, "b4", i["B4"][1:5])
+        b5 = (name, "b5", i["B5"][1:5])
+        b6 = (name, "b6", i["B6"][1:5])
+        bets.extend((b1, b2, b3, b4, b5, b6))
+    for i in bets:
+        for item in i[2]:
+            row = (i[0] + "," + i[1] + "," + item+"\n")
+            print(row, end="")
+            with open('bracketinfo.txt', "a") as pilog:
+                pilog.write(row)
 
 def main():
-    data = createDataFrame()
-    b1 = buildCSV(data)
+    buildCSV()
 
 if __name__ == "__main__":
     count = 0
     while True:
         count = count + 1
         main()
-        print()
-        print(str(count))
+        print("\n" + str(count))
         time.sleep(60)
