@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 import requests
 import json
-from pprint import pprint
-import csv
 import time
 
 def get_json():
@@ -61,6 +59,8 @@ def createDataFrame():
             yield brackets
 
 def buildCSV():
+    ''' Build a CSV which can be easily parsed to iterated upon for further analysis.'''
+
     # Much of this work may look duplicated, but creating a new function for the CSV
     # Allows the above data structure to be reused in the future, if needed.
     data = createDataFrame()
