@@ -87,6 +87,7 @@ def main():
     buildCSV()
 
 if __name__ == "__main__":
+    # Create count object to count how many times the script has run, for my own reference.
     count = 0
     while True:
         count = count + 1
