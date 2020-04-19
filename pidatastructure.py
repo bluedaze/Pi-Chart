@@ -4,117 +4,90 @@ import json
 import time
 import sqlite3
 
-def get_json():
-    '''Calls json object from PredictIt to be parsed'''
-    page = requests.get('https://www.predictit.org/api/marketdata/all/')
-    all_markets = json.loads(page.text)
-    markets = all_markets['markets']
-    return markets
+print("Starting Script...")
 
-def parse_json():
-    '''Generator to create a data structure for PredictIt.com twitter markets.
-    This Data can be more easily parsed for data analysis.'''
-    markets = get_json()
+def sanityCheck(*argv):
+    '''
+    This function exists to ensure that all None values are converted to 0.00
+    '''
+
+    for arg in argv:
+        if arg == None:
+            arg = 0.00
+        else:
+            arg = arg
+        return arg
+
+def currency(*argv):
+    '''
+    This function exists to convert all values to currency.
+    '''
+
+    for arg in argv:
+        currency = "${:,.2f}".format(arg) 
+        return currency
+
+def main():
+    '''
+    Fetches twitter data markets from predictit API and adds it to a sqlite database.
+    '''
+
+    page = requests.get('http://www.predictit.org/api/marketdata/all')
+    print(page)
+    pidata = json.loads(page.text)
+    markets = pidata['markets']
     for i in markets:
-        brackets = {}
-        count = 0
         marketName = i['name']
+        shortMarketName = i['shortName']
+        shortMarketName = shortMarketName.rsplit(" ")[0]
+        origin_url = i['url']
+        url = origin_url.rsplit("detail")[1]
+        url_prefix = origin_url.rsplit("detail")[0]
         marketID = i['id']
         contracts = i['contracts']
         timeStamp = i['timeStamp']
+        timeStamp = timeStamp[11:16]
+        status = i['status']
+        print(timeStamp)
+
 
         if (marketName.find('tweets') != -1):
+            conn = sqlite3.connect('testcase1.db')
+            c = conn.cursor()
+            c.execute("CREATE TABLE IF NOT EXISTS stuffToPlot(\"Market Name\" TEXT, \"Contract Name\" TEXT, \"Buy Yes\" TEXT, \
+             \"Buy No\" TEXT, \"Sell Yes\" TEXT, \"Sell No\" TEXT, \"CurrentTime Stamp\" TEXT, url TEXT)")
             for i in contracts:
-                # Accumulator created to be appended to bracket name.
-                count = count + 1
+                contractID = i['id']
+                dateEnd = i['dateEnd']
+                image = i['image']
+                contractName = i['name']
+                shortContractName = i['shortName']
+                status = i['status']
+                lastTradePrice = i['lastTradePrice']
+                buyYes = i['bestBuyYesCost']
+                buyNo = i['bestBuyNoCost']
+                sellYes = i['bestSellYesCost']
+                sellNo = i['bestSellNoCost']
+                lastClosePrice = i['lastClosePrice']
+                # DisplayOrder is absolutely worthless, contrary to the name it does not display anything in order.
+                # I included in case the api is updated to make it not worthless. This comment has more value than displayOrder.
+                displayOrder = i['displayOrder']
 
-                betName = i['name']
-                bracket_name = "B" + str(count)
-                bestBuyNo = i['bestBuyNoCost']
-                bestBuyYes = i['bestBuyYesCost']
-                bestSellNo = i['bestSellNoCost']
-                bestSellYes = i['bestSellYesCost']
+                #Ensures that values are not None.
+                #Then converts to currency.
+                buyYes = currency(sanityCheck(buyYes))
+                buyNo = currency(sanityCheck(buyNo))
+                sellYes = currency(sanityCheck(sellYes))
+                sellNo = currency(sanityCheck(sellNo))
 
-                # Creating an object to be yieled.
-                bets = {"MarketHeader": [
-                "Market Name: " + str(marketName),
-                "Market ID: " + str(marketID),
-                "Time: " + str(timeStamp)],
+                c.execute("INSERT INTO stuffToPlot (\"Market Name\", \"Contract Name\", \"Buy Yes\", \"Buy No\", \"Sell Yes\", \
+                    \"Sell No\", \"CurrentTime Stamp\", url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (shortMarketName, contractName, buyYes, buyNo, sellYes, sellNo, timeStamp, url))
+                print(marketName+":", contractName, buyYes, buyNo, sellYes, sellNo, timeStamp, url)
 
-                # Brackets are labeled so that you know what the values belong to. Labeling follows the following pattern:
-                # BN = Buy No
-                # BY = Buy Yes
-                # SN = Sell No
-                # SY = Sell Yes
-                bracket_name: [betName,
-                "BN"  + str(bestBuyNo),
-                "BY"  + str(bestBuyYes),
-                "SN"  + str(bestSellNo),
-                "SY" + str(bestSellYes)]}
-
-                brackets.update(bets)
-            # Yields an object from the dictionary brackets{}. This is a new one to me!
-            # Much faster than returning a list object, which was what I was doing before.
-            yield brackets
-
-def data_frame():
-    ''' Build a CSV which can be easily parsed to iterated upon for further analysis.'''
-
-    # Much of this work may look duplicated, but creating a new function for the CSV
-    # Allows the above data structure to be reused in the future, if needed.
-    data = parse_json()
-    bets = []
-    for i in data:
-        time = i["MarketHeader"][2][17:25]
-        date= i["MarketHeader"][2][6:16]
-        name = i["MarketHeader"][0][35::].rsplit("post")[0].strip()
-        # Create tuple objects which can then be iterated over to write a csv.
-        # Create a name based upon the market header object by string splitting, and then stripping white space.
-        b1 = (name, "b1", i["B1"][1:5], time, date)
-        b2 = (name, "b2", i["B2"][1:5], time, date)
-        b3 = (name, "b3", i["B3"][1:5], time, date)
-        b4 = (name, "b4", i["B4"][1:5], time, date)
-        b5 = (name, "b5", i["B5"][1:5], time, date)
-        b6 = (name, "b6", i["B6"][1:5], time, date)
-        b7 = (name, "b7", i["B7"][1:5], time, date)
-        b8 = (name, "b8", i["B8"][1:5], time, date)
-        b9 = (name, "b9", i["B9"][1:5], time, date)
-        bets.extend((b1, b2, b3, b4, b5, b6, b7, b8, b9))
-
-    yield bets
-
-def data_entry():
-    conn = sqlite3.connect('testcase1.db')
-    c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS stuffToPlot(name TEXT, bracket TEXT, bet_name TEXT, bet_value REAL, tstamp, dstamp)")
-    betGenerator = data_frame()
-    for listyield in betGenerator:
-        for i in listyield:
-            for bet in i[2]:
-                name = i[0]
-                bracket = i[1]
-                bet_name = bet[0:2]
-                if bet[2::] == "None":
-                    bet_value = 0.00
-                else:
-                    bet_value = bet[2::]
-                #bet_value = bet[2::]
-                time = i[3]
-                date = i[4]
-                c.execute("INSERT INTO stuffToPlot (name, bracket, bet_name, bet_value, tstamp, dstamp) VALUES (?, ?, ?, ?, ?, ?)",
-                  (name, bracket, bet_name, bet_value, time, date))
-                print(name, bracket, bet_name, bet_value, time, date)
-    conn.commit()
-    c.close()
-    conn.close()
-
-def main():
-    data_entry()
+            conn.commit()
+            c.close()
+            conn.close()
 
 if __name__ == "__main__":
-    count = 0
-    while True:
-        count = count + 1
-        main()
-        print("\n" + str(count))
-        time.sleep(60)
+    main()
