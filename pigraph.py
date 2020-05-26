@@ -107,11 +107,6 @@ def create_dashboard(server):
 
 	return dash_app.server
 
-
-
-
-
-
 with app.app_context():
     # Import Dash application
     app = create_dashboard(app)
