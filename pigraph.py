@@ -13,6 +13,7 @@ from flask import Flask
 app = Flask(__name__)
 def create_dashboard(server):
 	dash_app = dash.Dash(routes_pathname_prefix='/', external_stylesheets=[dbc.themes.CYBORG], server=server)
+	dash_app.title = 'Pi-chart.com'
 
 	dash_app.layout = dbc.Container([
 	        dcc.Store(id="localstorage", storage_type="local"),
