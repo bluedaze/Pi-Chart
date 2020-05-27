@@ -3,7 +3,6 @@ import sqlite3
 import plotly.graph_objects as go
 import plotly.io as pio
 import pisql as ps
-import pirequest as pr
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -15,15 +14,13 @@ app = Flask(__name__)
 def create_dashboard(server):
 	dash_app = dash.Dash(routes_pathname_prefix='/', external_stylesheets=[dbc.themes.CYBORG], server=server)
 
-
-
 	dash_app.layout = dbc.Container([
 	        dcc.Store(id="localstorage", storage_type="local"),
 	        html.Div(id='tab-content'),
 	        html.Div(id='tabs'),
 	        dcc.Interval(
 	            id='interval-component',
-	            interval=1*60000, # in milliseconds
+	            interval=1*60000, # in millisecond
 	            n_intervals=0
 	        )
 	    ])
@@ -32,11 +29,9 @@ def create_dashboard(server):
 	@dash_app.callback(Output('localstorage', 'data'),
 	              [Input('interval-component', 'n_intervals')])
 	def create_figure(n):
-		pr.ping()
 		graphs = {}
 		fetch_tables = ps.fetch_tables()
 		tables = list(fetch_tables)
-
 		count = 0
 		for market in tables:
 			fig = go.Figure()
@@ -107,10 +102,10 @@ def create_dashboard(server):
 
 	return dash_app.server
 
+
 with app.app_context():
-    # Import Dash application
     app = create_dashboard(app)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)
