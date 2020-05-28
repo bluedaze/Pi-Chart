@@ -14,7 +14,7 @@ from flask import Flask
 
 app = Flask(__name__)
 def create_dashboard(server):
-	dash_app = dash.Dash(routes_pathname_prefix='/', external_stylesheets=[dbc.themes.CYBORG], server=server)
+	dash_app = dash.Dash(routes_pathname_prefix='/', external_stylesheets=[dbc.themes.SLATE], server=server)
 	dash_app.title = 'Pi-chart.com'
 	dash_app.layout = dbc.Container([html.Title("Pi-chart.com"),
 	        dcc.Store(id="localstorage", storage_type="local"),
@@ -25,7 +25,7 @@ def create_dashboard(server):
 	            interval=1*60000, # in millisecond
 	            n_intervals=0
 	        )
-	    ])
+	    ], fluid=True)
 
 
 	@dash_app.callback(Output('localstorage', 'data'),
@@ -110,10 +110,9 @@ def create_dashboard(server):
 		for key in figures:
 			tabscontent.append(dbc.Tab(dcc.Graph(figure=figures[key]), label=key))
 
-		return 		dbc.Card(dbc.CardBody([html.H5('Pi-chart presently in beta.', className='card-title'),
+		return 		dbc.Row(dbc.Col([html.H3('Pi-chart presently in beta.', className='card-title'),
 	                 html.P('Look forward to more in the future!'),
-	                 html.Div(dbc.Tabs(tabscontent))]), color='secondary',
-	                 outline=True, inverse=True)
+	                 html.Div(dbc.Tabs(tabscontent))], width=6))
 
 
 
