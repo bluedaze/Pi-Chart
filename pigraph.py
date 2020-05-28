@@ -111,7 +111,12 @@ def create_dashboard(server):
 			tabscontent.append(dbc.Tab(dcc.Graph(figure=figures[key]), label=key))
 
 		return 		dbc.Row(dbc.Col([html.H3('Pi-chart presently in beta.', className='card-title'),
-	                 html.P(['Look forward to more in the future!',html.Br(), dcc.Link('PredictIt Tweet Markets', href='https://www.predictit.org/markets/search?query=tweets', target="_blank")]),
+
+	                 html.P(['Look forward to more in the future!', 
+	                 html.Br(), 
+	                 dcc.Link('PredictIt Tweet Markets', href='https://www.predictit.org/markets/search?query=tweets', target="_blank")
+	                 ]),
+	        
 	                 html.Div(dbc.Tabs(tabscontent))], width=6))
 
 
