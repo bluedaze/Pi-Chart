@@ -4,8 +4,10 @@ import json
 import time
 import sqlite3
 from datetime import datetime
-
-print("Starting Script...")
+num = 0
+print("\n\n----------------------\
+\nRestarting Script...\n\
+----------------------\n\n")
 
 def sanityCheck(*argv):
     '''
@@ -29,6 +31,7 @@ def currency(*argv):
         return currency
 
 def ping():
+    commitNumber = 0
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     count = 0
@@ -38,8 +41,9 @@ def ping():
     # create variable database in order to use this function with another market. Polls, maybe?
 
     page = requests.get('http://www.predictit.org/api/marketdata/all')
-    print("PredictIt API:", page)
-    print("Current Time: ", current_time)
+    print("\t\tPredictIt-API:", page)
+    print("\t\tCurrent  Time: ", current_time)
+    print()
     pidata = json.loads(page.text)
     markets = pidata['markets']
     for i in markets:
@@ -55,7 +59,8 @@ def ping():
         status = i['status']
 
         if (marketName.find('tweets') != -1):
-            conn = sqlite3.connect('pidb.db')
+            conn = sqlite3.connect('pidb.db', isolation_level=None)
+            conn.execute('pragma journal_mode=wal;')
             c = conn.cursor()
             c.execute("CREATE TABLE IF NOT EXISTS tweets (bracket TEXT, timeStamp TEXT, marketName TEXT, contractName TEXT, buyYes TEXT, \
              buyNo TEXT, sellYes TEXT, sellNo TEXT, url TEXT)")
@@ -92,15 +97,22 @@ def ping():
                 buyNo = currency(sanityCheck(buyNo))
                 sellYes = currency(sanityCheck(sellYes))
                 sellNo = currency(sanityCheck(sellNo))
-                c.execute("INSERT INTO tweets (bracket, timeStamp, marketName, contractName, buyYes, buyNo, sellYes, \
-                    sellNo, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    (bracket, timeStamp, shortMarketName, contractName, buyYes, buyNo, sellYes, sellNo, url))
-
+                try:
+                    c.execute("INSERT INTO tweets (bracket, timeStamp, marketName, contractName, buyYes, buyNo, sellYes, \
+                        sellNo, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        (bracket, timeStamp, shortMarketName, contractName, buyYes, buyNo, sellYes, sellNo, url))
+                except Exception as ex:
+                    print(ex)
             conn.commit()
             c.close()
             conn.close()
+            commitNumber = commitNumber + 1
+            print("Commit number:", commitNumber, " |  ", end="")
+            print(shortMarketName, "committed to database")
+    print("\n\t\tAll queries committed\n\n\
+|-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-|")
 
 if __name__ == "__main__":
     while True:
         ping()
-        time.sleep(60)
+        time.sleep(59)
