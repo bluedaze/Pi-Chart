@@ -10,12 +10,13 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from flask import Flask
 
+
+
 app = Flask(__name__)
 def create_dashboard(server):
 	dash_app = dash.Dash(routes_pathname_prefix='/', external_stylesheets=[dbc.themes.CYBORG], server=server)
 	dash_app.title = 'Pi-chart.com'
-
-	dash_app.layout = dbc.Container([
+	dash_app.layout = dbc.Container([html.Title("Pi-chart.com"),
 	        dcc.Store(id="localstorage", storage_type="local"),
 	        html.Div(id='tab-content'),
 	        html.Div(id='tabs'),
@@ -31,21 +32,44 @@ def create_dashboard(server):
 	              [Input('interval-component', 'n_intervals')])
 	def create_figure(n):
 		graphs = {}
+		brackets = {}
+		marketData=[]
 		fetch_tables = ps.fetch_tables()
 		tables = list(fetch_tables)
 		count = 0
 		for market in tables:
+			bracketData = {}
 			fig = go.Figure()
 			for i in range(9):
 				bracket = 'B' + str(i + 1)
 				data = ps.query_bracket(bracket, market)
-				prices = [i[0] for i in data]
-				timeStamp = [i[1] for i in data]
+				prices, timeStamp = map(list, zip(*[[k, v] for k, v in data]))
+				bracketData[bracket] = prices, timeStamp
+			graphs.update({market: bracketData})
+
+		return graphs
+
+	@dash_app.callback(
+	    Output("tab-content", "children"),
+	    [Input("localstorage", "data")],
+	)
+	def create_layout(graphs):
+		figures = {}
+		markets = graphs.keys()
+		for market in markets:
+			brackets = graphs[market].keys()
+			fig = go.Figure()
+			for bracket in brackets:
+				prices = graphs[market][bracket][0]
+				timeStamp = graphs[market][bracket][1]
 				figure = fig.add_trace(go.Scatter(x=timeStamp, y=prices,
 				name=bracket,
 				hovertemplate='<b>Bracket: ' + bracket
 				+ '</b>.<br>Price: %{y:$.2f}<extra></extra><br>'
-				+ '%{x}<br>'))
+				+ '%{x}<br>', line_shape="spline"))
+
+			figures.update({market: fig})
+
 
 			template = 'plotly_dark'
 			fig.update_layout(
@@ -80,19 +104,11 @@ def create_dashboard(server):
 			])
 			graphs.update({market: fig})
 
-
-	    # save figures in a dictionary for sending to the dcc.Store
-		
-		return graphs
-
-	@dash_app.callback(
-	    Output("tab-content", "children"),
-	    [Input("localstorage", "data")],
-	)
-	def create_layout(data):
 		tabscontent=[]
-		for key in data:
-			tabscontent.append(dbc.Tab(dcc.Graph(figure=data[key]), label=key))
+
+
+		for key in figures:
+			tabscontent.append(dbc.Tab(dcc.Graph(figure=figures[key]), label=key))
 
 		return 		dbc.Card(dbc.CardBody([html.H5('Pi-chart presently in beta.', className='card-title'),
 	                 html.P('Look forward to more in the future!'),
@@ -105,8 +121,8 @@ def create_dashboard(server):
 
 
 with app.app_context():
-    app = create_dashboard(app)
+	app = create_dashboard(app)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False)
+	app.run(host='0.0.0.0', debug=True)
