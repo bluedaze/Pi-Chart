@@ -8,6 +8,7 @@ yesterday = today - timedelta(hours=24)
 today.strftime('%Y-%m-%d')
 yesterday = yesterday.strftime('%Y-%m-%d')
 print("Purging data from", yesterday)
+yesterday = "%"+yesterday+"%"
 conn = sqlite3.connect("pidb.db", isolation_level=None)
 conn.execute('pragma journal_mode=wal;')
 c = conn.cursor()
