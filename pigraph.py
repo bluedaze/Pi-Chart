@@ -62,11 +62,11 @@ def create_dashboard(server):
 			for bracket in brackets:
 				prices = graphs[market][bracket][0]
 				timeStamp = graphs[market][bracket][1]
-				figure = fig.add_trace(go.Scatter(x=timeStamp, y=prices,
+				figure = fig.add_trace(go.Scattergl(x=timeStamp, y=prices,
 				name=bracket,
 				hovertemplate='<b>Bracket: ' + bracket
 				+ '</b>.<br>Price: %{y:$.2f}<extra></extra><br>'
-				+ '%{x}<br>', line_shape="spline"))
+				+ '%{x}<br>'))
 
 			figures.update({market: fig})
 
