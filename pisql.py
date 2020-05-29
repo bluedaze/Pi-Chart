@@ -4,7 +4,7 @@ import sqlite3
 def query_bracket(bracket, market):
 	''' Query database for tweet markets '''
 
-	conn = sqlite3.connect("pidb.db")
+	conn = sqlite3.connect("pidb.db", isolation_level=None)
 	c = conn.cursor()
 	
 	selected = [(bracket[0], bracket[1]) for bracket in c.execute("SELECT buyYes, timeStamp, marketName from tweets WHERE bracket=? AND marketName=?", (bracket, market,))]	
@@ -15,7 +15,7 @@ def query_bracket(bracket, market):
 def fetch_tables():
 	tables = []
 	''' Gets the names of all markets '''
-	conn = sqlite3.connect("pidb.db")
+	conn = sqlite3.connect("pidb.db", isolation_level=None)
 	c = conn.cursor()
 	c.execute("SELECT DISTINCT marketName FROM tweets")
 	selected = c.fetchall()
