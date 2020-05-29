@@ -24,7 +24,7 @@ def create_dashboard(server):
 	        {%favicon%}
 	        {%css%}
 		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA"></script>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-11302591-2"></script>
 		<script>
 		  window.dataLayer = window.dataLayer || [];
 		  function gtag(){dataLayer.push(arguments);}
@@ -113,8 +113,8 @@ def create_dashboard(server):
 			rangeslider=dict(visible=True, thickness=0.08),
 			),
 			yaxis=dict(showgrid=False),
-			height=768,
-			width=1070,
+			#height=768,
+			#width=1070,
 			title_text=market,
 			showlegend=True,
 			margin=dict(l=100, t=100, r=20, b=20),
@@ -137,16 +137,15 @@ def create_dashboard(server):
 
 
 		for key in figures:
-			tabscontent.append(dbc.Tab(dcc.Graph(figure=figures[key]), label=key))
+			tabscontent.append(dbc.Col(dcc.Graph(figure=figures[key])))
+		
+		return html.Div([dbc.Row(dbc.Col(
 
-		return 		dbc.Row(dbc.Col([html.H3('Pi-chart presently in beta.', className='card-title'),
 
-	                 html.P(['Look forward to more in the future!', 
-	                 html.Br(), 
-	                 dcc.Link('PredictIt Tweet Markets', href='https://www.predictit.org/markets/search?query=tweets', target="_blank")
-	                 ]),
-	        
-	                 html.Div(dbc.Tabs(tabscontent))], width=6))
+			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=tweet", target="_blank"))],brand="Pi-Chart", color="primary", dark=True, fluid=True)])), 
+			
+
+			dbc.Row(tabscontent, no_gutters=True)])
 
 
 
@@ -159,3 +158,41 @@ with app.app_context():
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', debug=True)
+
+
+
+
+import dash_bootstrap_components as dbc
+
+# navbar = dbc.NavbarSimple(
+#     children=[
+#         dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+#         dbc.DropdownMenu(
+#             children=[
+#                 dbc.DropdownMenuItem("More pages", header=True),
+#                 dbc.DropdownMenuItem("Page 2", href="#"),
+#                 dbc.DropdownMenuItem("Page 3", href="#"),
+#             ],
+#             nav=True,
+#             in_navbar=True,
+#             label="More",
+#         ),
+#     ],
+#     brand="NavbarSimple",
+#     brand_href="#",
+#     color="primary",
+#     dark=True,
+# )
+
+# navbar = dbc.NavbarSimple(
+#     brand="NavbarSimple",
+#     brand_href="#",
+#     color="primary",
+#     dark=True,
+# )
+
+
+		# return 		html.H3('Pi-chart presently in beta.'), html.P(['Look forward to more in the future!', 
+	 #                 html.Br(), 
+	 #                 dcc.Link('PredictIt Tweet Markets', href='https://www.predictit.org/markets/search?query=tweets', target="_blank")
+	 #                 ]), html.Div(dbc.Row(tabscontent, no_gutters=True))
