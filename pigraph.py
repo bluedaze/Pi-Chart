@@ -15,6 +15,35 @@ from flask import Flask
 app = Flask(__name__)
 def create_dashboard(server):
 	dash_app = dash.Dash(routes_pathname_prefix='/', external_stylesheets=[dbc.themes.SLATE], server=server)
+	dash_app.index_string = '''
+	<!DOCTYPE html>
+	<html>
+	    <head>
+	        {%metas%}
+	        <title>{%title%}</title>
+	        {%favicon%}
+	        {%css%}
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-11302591-2');
+		</script>
+
+	    </head>
+	    <body>
+	        {%app_entry%}
+	        <footer>
+	            {%config%}
+	            {%scripts%}
+	            {%renderer%}
+	        </footer>
+	    </body>
+	</html>
+	'''
 	dash_app.title = 'Pi-chart.com'
 	dash_app.layout = dbc.Container([html.Title("Pi-chart.com"),
 	        dcc.Store(id="localstorage", storage_type="local"),
