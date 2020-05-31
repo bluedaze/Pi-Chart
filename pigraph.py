@@ -69,14 +69,9 @@ def create_dashboard(server):
 		for market in tables:
 			bracketData = {}
 			fig = go.Figure()
-			for i in range(9):
-				bracket = 'B' + str(i + 1)
-				data = ps.query_bracket(bracket, market)
-				prices, timeStamp = map(list, zip(*[[k, v] for k, v in data]))
-				bracketData[bracket] = prices, timeStamp
-			graphs.update({market: bracketData})
-
-		return graphs
+			data = ps.query_bracket(market)
+			graphs.update({market: data})
+			return graphs
 
 	@dash_app.callback(
 	    Output("tab-content", "children"),
@@ -142,7 +137,8 @@ def create_dashboard(server):
 		return html.Div([dbc.Row(dbc.Col(
 
 
-			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=tweet", target="_blank"))],brand="Pi-Chart", color="primary", dark=True, fluid=True)])), 
+			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=tweet", target="_blank"))],
+				brand="Pi-Chart", color="primary", dark=True, fluid=True)])), 
 			
 
 			dbc.Row(tabscontent, no_gutters=True)])
