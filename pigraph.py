@@ -67,14 +67,9 @@ def create_dashboard(server):
 		tables = list(fetch_tables)
 		count = 0
 		for market in tables:
-			bracketData = {}
 			fig = go.Figure()
-			for i in range(9):
-				bracket = 'B' + str(i + 1)
-				data = ps.query_bracket(bracket, market)
-				prices, timeStamp = map(list, zip(*[[k, v] for k, v in data]))
-				bracketData[bracket] = prices, timeStamp
-			graphs.update({market: bracketData})
+			data = ps.query_bracket(market)
+			graphs[market] = data
 
 		return graphs
 
@@ -142,7 +137,8 @@ def create_dashboard(server):
 		return html.Div([dbc.Row(dbc.Col(
 
 
-			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=tweet", target="_blank"))],brand="Pi-Chart", color="primary", dark=True, fluid=True)])), 
+			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=tweet", target="_blank"))],
+				brand="Pi-Chart", color="primary", dark=True, fluid=True)])), 
 			
 
 			dbc.Row(tabscontent, no_gutters=True)])
@@ -158,3 +154,41 @@ with app.app_context():
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', debug=True)
+
+
+
+
+import dash_bootstrap_components as dbc
+
+# navbar = dbc.NavbarSimple(
+#     children=[
+#         dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+#         dbc.DropdownMenu(
+#             children=[
+#                 dbc.DropdownMenuItem("More pages", header=True),
+#                 dbc.DropdownMenuItem("Page 2", href="#"),
+#                 dbc.DropdownMenuItem("Page 3", href="#"),
+#             ],
+#             nav=True,
+#             in_navbar=True,
+#             label="More",
+#         ),
+#     ],
+#     brand="NavbarSimple",
+#     brand_href="#",
+#     color="primary",
+#     dark=True,
+# )
+
+# navbar = dbc.NavbarSimple(
+#     brand="NavbarSimple",
+#     brand_href="#",
+#     color="primary",
+#     dark=True,
+# )
+
+
+		# return 		html.H3('Pi-chart presently in beta.'), html.P(['Look forward to more in the future!', 
+	 #                 html.Br(), 
+	 #                 dcc.Link('PredictIt Tweet Markets', href='https://www.predictit.org/markets/search?query=tweets', target="_blank")
+	 #                 ]), html.Div(dbc.Row(tabscontent, no_gutters=True))
