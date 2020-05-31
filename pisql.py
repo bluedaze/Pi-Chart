@@ -1,22 +1,17 @@
 import sqlite3
 
 
-def query_bracket(market):
+def query_bracket(bracket, market):
 	''' Query database for tweet markets '''
+
 	conn = sqlite3.connect("pidb.db", isolation_level=None)
-	conn.row_factory = sqlite3.Row
+	conn.execute('pragma journal_mode=wal;')
 	c = conn.cursor()
-	c.execute("SELECT bracket, buyYes, timeStamp FROM tweets WHERE marketName = ? ORDER BY bracket, timeStamp;", ( market,))
-	selected = [tuple(row) for row in c.fetchall()]
-	bracketData = {}
-	for i in range(9):
-		bracket = "B"+str(i+1)
-		b = [(y, z) for x, y, z in selected if x == bracket]
-		prices, timeStamp = map(list, zip(*[[k, v] for k, v in b]))
-		bracketData[bracket] = prices, timeStamp
+	
+	selected = [(bracket[0], bracket[1]) for bracket in c.execute("SELECT buyYes, timeStamp, marketName from tweets WHERE bracket=? AND marketName=?", (bracket, market,))]	
 	c.close()
 	conn.close()
-	return bracketData
+	return selected
 
 def fetch_tables():
 	tables = []
