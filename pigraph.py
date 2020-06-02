@@ -133,7 +133,7 @@ def create_dashboard(server):
 
 		for key in figures:
 			tabscontent.append(dbc.Col(dcc.Graph(figure=figures[key])))
-		string = "Predictit has marked these screenshots as spam" 
+		string = "Predictit has marked these screenshots as spam." 
 		string1 = " I am including the screenshots as a link here, since they are suppressing these messages for some reason."
 		notice = string + string1
 		return html.Div([dbc.Row(dbc.Col(
