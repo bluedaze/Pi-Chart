@@ -133,9 +133,7 @@ def create_dashboard(server):
 
 		for key in figures:
 			tabscontent.append(dbc.Col(dcc.Graph(figure=figures[key])))
-		string = "Predictit has marked these screenshots as spam." 
-		string1 = " I am including the screenshots as a link here, since they are suppressing these messages for some reason."
-		notice = string + string1
+		notice = "We may have to move on, but we don't have to give up." 
 		return html.Div([dbc.Row(dbc.Col(
 
 
@@ -145,8 +143,8 @@ def create_dashboard(server):
 
 			dbc.Row(tabscontent, no_gutters=True),
 
-			html.Div([html.P(notice), html.P([dcc.Link("Former employee shares thoughts on PredictIt is shutting down the twitter markets", 
-				href='https://imgur.com/a/OE3nBsy', target="_blank")])])
+			html.Div([html.P(notice), html.P([dcc.Link("Don't let this be the end. Join us on discord.", 
+				href='https://discord.gg/V7wmfd', target="_blank")])])
 
 
 			])
