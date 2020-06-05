@@ -133,11 +133,11 @@ def create_dashboard(server):
 
 		for key in figures:
 			tabscontent.append(dbc.Col(dcc.Graph(figure=figures[key])))
-		notice = "We may have to move on, but we don't have to give up." 
+		notice = "Dear tweets degens... We may have to move on, but we don't have to give up." 
 		return html.Div([dbc.Row(dbc.Col(
 
 
-			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=tweet", target="_blank"))],
+			[dbc.NavbarSimple([dbc.NavItem(dbc.NavLink("Tweet Markets", href="https://www.predictit.org/markets/search?query=poll", target="_blank"))],
 				brand="Pi-Chart", color="primary", dark=True, fluid=True)])), 
 			
 
