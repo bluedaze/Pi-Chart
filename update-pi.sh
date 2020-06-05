@@ -1,4 +1,4 @@
-cho "Updating pi-graph.com..."
+echo "Updating pi-graph.com..."
 sleep 1s
 echo "Pulling from repository"
 git pull https://github.com/bluedaze/Pi-Chart.git
