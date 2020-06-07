@@ -1,6 +1,26 @@
 import sqlite3
 
+# bracket, timeStamp, marketName, contractName, buyYes, buyNo, sellYes, sellNo, url
 
+def insert_data(*args):
+	insert_Sql = "INSERT INTO tweets (bracket, timeStamp, marketName, contractName, buyYes, buyNo, sellYes, \
+	                sellNo, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
+	conn = sqlite3.connect('pidb.db', isolation_level=None)
+	conn.execute('pragma journal_mode=wal;')
+	c = conn.cursor()
+	c.execute(insert_Sql, args)
+
+def create_database():
+	table_sql = "CREATE TABLE IF NOT EXISTS tweets (bracket TEXT, timeStamp TEXT, marketName TEXT, contractName TEXT, buyYes TEXT, \
+	buyNo TEXT, sellYes TEXT, sellNo TEXT, url TEXT)"
+
+	conn = sqlite3.connect('pidb.db', isolation_level=None)
+	conn.execute('pragma journal_mode=wal;')
+	c = conn.cursor()
+	c.execute(table_sql)
+	c.close()
+	conn.close()
 
 def query_bracket(market):
 	''' Query database for tweet markets '''
