@@ -11,7 +11,7 @@ print("\n\n----------------------\
 ----------------------\n\n")
 
 
-def sanityCheck(*args):
+def notNone(*args):
     '''
     None values are converted to 0.00
     '''
@@ -19,8 +19,6 @@ def sanityCheck(*args):
     for arg in args:
         if arg == None:
             arg = 0.00
-        else:
-            arg = arg
         return arg
 
 def currency(*args):
@@ -34,9 +32,8 @@ def currency(*args):
 
 def ping():
     '''
-    Fetches twitter data markets from predictit API and adds it to a sqlite database.
+    Pulls data from PredictIt API.
     '''
-    # create variable database in order to use this function with another market. Polls, maybe?
 
     page = requests.get('http://www.predictit.org/api/marketdata/all')
     pidata = json.loads(page.text)
@@ -49,10 +46,12 @@ def ping():
         timeStamp = i['timeStamp']
 
         if (marketName.find('538') != -1 or marketName.find('RCP') != -1):
-            pi_api_query(shortName, timeStamp, url, contracts)
+            parse_pi(shortName, timeStamp, url, contracts)
 
 
-def pi_api_query(marketName, timeStamp, url, contracts):
+def parse_pi(marketName, timeStamp, url, contracts):
+
+    '''Parses PredictIt for relevent data'''
 
     count = 0
     create_database()
@@ -71,10 +70,10 @@ def pi_api_query(marketName, timeStamp, url, contracts):
 
         # Ensures that values are not None.
         # Then converts to currency.
-        buyYes = currency(sanityCheck(buyYes))
-        buyNo = currency(sanityCheck(buyNo))
-        sellYes = currency(sanityCheck(sellYes))
-        sellNo = currency(sanityCheck(sellNo))
+        buyYes = currency(notNone(buyYes))
+        buyNo = currency(notNone(buyNo))
+        sellYes = currency(notNone(sellYes))
+        sellNo = currency(notNone(sellNo))
 
         try:
             insert_data(bracket, timeStamp, marketName, contractName, buyYes, buyNo, sellYes, sellNo, url)
